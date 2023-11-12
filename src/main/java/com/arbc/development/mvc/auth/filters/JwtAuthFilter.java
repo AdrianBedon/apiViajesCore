@@ -1,5 +1,7 @@
 package com.arbc.development.mvc.auth.filters;
 
+import static com.arbc.development.mvc.auth.TokenJwtConfig.*;
+
 import java.io.IOException;
 import java.util.Base64;
 import java.util.HashMap;
@@ -41,8 +43,6 @@ public class JwtAuthFilter extends UsernamePasswordAuthenticationFilter{
             user = new ObjectMapper().readValue(request.getInputStream(), User.class);
             username = user.getUsername();
             password = user.getPassword();
-            logger.info("Username desde request InputStream (raw): " + username);
-            logger.info("Password desde request InputStream (raw): " + password);
         } catch (StreamReadException e) {
             e.printStackTrace();
         } catch (DatabindException e) {
@@ -61,8 +61,8 @@ public class JwtAuthFilter extends UsernamePasswordAuthenticationFilter{
             Authentication authResult) throws IOException, ServletException {
         
         String username = ((org.springframework.security.core.userdetails.User) authResult.getPrincipal()).getUsername();
-        String token = Base64.getEncoder().encodeToString(("algun_token_con_alguna_frase_secreta." + username).getBytes());
-        response.addHeader("Authorization", "Bearer " + token);
+        String token = Base64.getEncoder().encodeToString((SECRET_KEY + "." + username).getBytes());
+        response.addHeader(HEADER_AUTHORIZATION, PREFIX_TOKEN + token);
 
         Map<String, Object> body = new HashMap<>();
         body.put("token", token);
