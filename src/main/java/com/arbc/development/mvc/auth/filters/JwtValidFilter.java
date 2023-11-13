@@ -3,7 +3,7 @@ package com.arbc.development.mvc.auth.filters;
 import static com.arbc.development.mvc.auth.TokenJwtConfig.*;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,9 +15,11 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
+import com.arbc.development.mvc.auth.SimpleGrantedAuthorityJsonCreator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import jakarta.servlet.FilterChain;
@@ -47,16 +49,19 @@ public class JwtValidFilter extends BasicAuthenticationFilter {
 
         try
         {
-            Claims claims = Jwts.parser()
-                .setSigningKey(SECRET_KEY)
-                .build().
-                parseClaimsJws(token)
-                .getBody();
+            Jws<Claims> claims = Jwts.parser()
+                .verifyWith(SECRET_KEY)
+                .build()
+                .parseSignedClaims(token);
 
-            Object username = claims.getSubject();
-            System.out.println(username);
-            List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-            authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+            String username = claims.getPayload().getSubject();
+            Object authoritiesClaims = claims.getPayload().get("authorities");
+            
+            List<GrantedAuthority> authorities = Arrays
+                    .asList(new ObjectMapper()
+                        .addMixIn(SimpleGrantedAuthority.class, SimpleGrantedAuthorityJsonCreator.class)
+                        .readValue(authoritiesClaims.toString().getBytes(), SimpleGrantedAuthority[].class));
+
             UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(username, null, authorities);
             SecurityContextHolder.getContext().setAuthentication(auth);
             chain.doFilter(request, response);

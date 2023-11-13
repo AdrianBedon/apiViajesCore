@@ -3,6 +3,7 @@ package com.arbc.development.mvc.auth.filters;
 import static com.arbc.development.mvc.auth.TokenJwtConfig.*;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -11,6 +12,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.arbc.development.mvc.models.entities.User;
@@ -62,7 +64,11 @@ public class JwtAuthFilter extends UsernamePasswordAuthenticationFilter{
             Authentication authResult) throws IOException, ServletException {
         
         String username = ((org.springframework.security.core.userdetails.User) authResult.getPrincipal()).getUsername();
+        Collection<? extends GrantedAuthority> roles = authResult.getAuthorities();
+        boolean isAdmin = roles.stream().anyMatch(r -> r.getAuthority().equals("ROLE_ADMIN"));
         String token = Jwts.builder()
+                .claim("authorities", new ObjectMapper().writeValueAsString(roles))
+                .claim("isAdmin", isAdmin)
                 .subject(username)
                 .signWith(SECRET_KEY)
                 .issuedAt(new Date())
