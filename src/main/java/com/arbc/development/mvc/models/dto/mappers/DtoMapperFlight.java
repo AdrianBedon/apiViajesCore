@@ -24,7 +24,7 @@ public class DtoMapperFlight {
         if(flight == null) {
             throw new RuntimeException("Debe enviar el entity flight!");
         }
-        return new FlightDto(this.flight.getId(), this.flight.getCode(), this.flight.getAirline(), this.flight.getCity_departure().getName(), this.flight.getCity_arrival().getName(), this.flight.getPrice());
+        return new FlightDto(this.flight.getId(), this.flight.getCode(), this.flight.getAirline(), this.flight.getCity_departure().getName(), this.flight.getCityArrival().getName(), this.flight.getPrice());
     }
 
 }

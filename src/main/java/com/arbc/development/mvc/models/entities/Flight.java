@@ -27,7 +27,7 @@ public class Flight {
 
     @OneToOne
     @JoinColumn(name = "id_city_arrival", referencedColumnName = "id")
-    private City city_arrival;
+    private City cityArrival;
 
     private double price;
 
@@ -63,12 +63,12 @@ public class Flight {
         this.city_departure = city_departure;
     }
 
-    public City getCity_arrival() {
-        return city_arrival;
+    public City getCityArrival() {
+        return cityArrival;
     }
 
     public void setCity_arrival(City city_arrival) {
-        this.city_arrival = city_arrival;
+        this.cityArrival = city_arrival;
     }
 
     public double getPrice() {
