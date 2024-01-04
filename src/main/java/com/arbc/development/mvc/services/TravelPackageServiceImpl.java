@@ -77,12 +77,13 @@ public class TravelPackageServiceImpl implements TravelPackageService{
             tPackageDb.setFlight(oF.orElseThrow());
             tPackageDb.setInitDate(tPackage.getInitDate());
             tPackageDb.setEndDate(tPackage.getEndDate());
-            tPackageDb.setPrice(oH.get().getPrice() + oF.get().getPrice());
+            tPackageDb.setPrice(tPackage.getPrice());
             tPackageOptional = travelPackageRepository.save(tPackageDb);
             user = userRepository.findByUsername(tPackage.getUsername()).orElseThrow();
             upDb.setTraPackage(tPackageOptional);
             upDb.setPrice(tPackageOptional.getPrice());
             upDb.setUser(user);
+            upDb.setAmount(tPackage.getAmount());
             usersPackageRepository.save(upDb);
         }
         return Optional.ofNullable(DtoMapperTravelPackage.builder().setTPackage(tPackageOptional).build());

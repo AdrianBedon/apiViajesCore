@@ -10,7 +10,9 @@ public class TravelPackageSave {
     private String flight;
     private LocalDate initDate;
     private LocalDate endDate;
+    private Double price;
     private String username;
+    private int amount;
 
     public Long getId() {
         return id;
@@ -60,11 +62,27 @@ public class TravelPackageSave {
         this.endDate = endDate;
     }
 
+    public Double getPrice() {
+        return price;
+    }
+
+    public void setPrice(Double price) {
+        this.price = price;
+    }
+
     public String getUsername() {
         return username;
     }
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public int getAmount() {
+        return amount;
+    }
+
+    public void setAmount(int amount) {
+        this.amount = amount;
     }
 }
