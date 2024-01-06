@@ -43,7 +43,8 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http.authorizeHttpRequests()
-            .requestMatchers(HttpMethod.GET, "/users", "/hotels", "/hotels/{city}", "/cities", "/flights", "/flights/{city}", "/packages", "/peak/reportSale").permitAll()
+            .requestMatchers(HttpMethod.GET, "/users", "/hotels", "/hotels/{city}", "/cities", "/flights", "/flights/{city}", "/packages").permitAll()
+            .requestMatchers(HttpMethod.POST,"/peak/reportSale").permitAll()
             .requestMatchers(HttpMethod.GET, "/users/{id}").hasAnyRole("USER", "ADMIN")
             .requestMatchers(HttpMethod.POST, "/packages").hasAnyRole("USER","ADMIN")
             .requestMatchers(HttpMethod.GET, "/peak", "/off").hasRole("ADMIN")
