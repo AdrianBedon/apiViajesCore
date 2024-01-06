@@ -25,3 +25,16 @@ En este último apartado del token se valida la firma del mismo.
 ![Alt text](imagenesReadme/Bed%C3%B3nAdri%C3%A1n-FirmaToken.jpg.png) ![Alt text](imagenesReadme/Bed%C3%B3nAdri%C3%A1n-Firma_Significado.jpg.png)
 
 Este token luego es almacenado dentro de 'axios' en el frontend de React para su uso en las operaciones posteriores, es importante mencionar que el tiempo máximo de validez del token es de 60 minutos (1 hora) o hasta que el servidor sea reiniciado.
+
+# CORE
+
+El siguiente Core tiene como objetivo la creación de paquetes de viajes y la generación de un reporte que ventas de acuerdo a las temporadas de viajes, es decir si la venta de un paquete se realizó dentro de temporada alta o temporada baja, para un mejor detalle del funcionamiento a continuación se presentan los diagramas de actividades:
+
+![Alt text](<imagenesReadme/Bedón Adrián-DiagramaDeActividades_Core 1.png>)
+![Alt text](<imagenesReadme/Bedón Adrián-DiagramaDeActividades_Core 2.jpg>)
+
+## Defensa
+
+Como parte de la defensa del siguiente proyecto se solicitó el cálculo de ingresos netos totales dentro de un determinado rango de fechas por parte de los paquetes vendidos dentro de la temporada alta.
+
+![Alt text](<imagenesReadme/Bedón Adrián-DiagramaDeActividades_Defensa.png>)
