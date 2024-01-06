@@ -1,5 +1,6 @@
 package com.arbc.development.mvc.services;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,6 +42,30 @@ public class PeakSeasonServiceImpl implements PeakSeasonService{
             dataDeliver.add(pP);
         }
         return dataDeliver;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Double getReport(LocalDate starDate, LocalDate endDate) {
+        List<PackagePeakSeason> peakSeasons = (List<PackagePeakSeason>) packagePeakSeasonRepository.findAll();
+        Double revenue = 0.0;
+        for (PackagePeakSeason packagePeakSeason : peakSeasons) {
+            int amount =0;
+            if (packagePeakSeason.getCreation_date().isAfter(starDate) && packagePeakSeason.getCreation_date().isBefore(endDate)) {
+                List<UsersPackage> uP = usersPackageRepository.findByTraPackage(travelPackageRepository.findById(packagePeakSeason.gettPackage()).get());
+                for (UsersPackage uPackage : uP) {
+                    amount += uPackage.getAmount();
+                }
+                Double price = travelPackageRepository.findById(packagePeakSeason.gettPackage()).get().getPrice();
+                Double priceOff = price / 1.15;
+                priceOff = priceOff - (priceOff * 0.15);
+                Double salePeak = price * amount;
+                Double saleOff = priceOff * amount;
+                Double saleDifference = salePeak - saleOff;
+                revenue += saleDifference;
+            }
+        }
+        return revenue;
     }
 
 }
