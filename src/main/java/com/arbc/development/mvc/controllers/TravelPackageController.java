@@ -1,5 +1,6 @@
 package com.arbc.development.mvc.controllers;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -57,4 +58,15 @@ public class TravelPackageController {
         }
         return ResponseEntity.notFound().build();
     }
+
+    @GetMapping("/date/{date}")
+    public List<TravelPackageDto> listDate(@PathVariable LocalDate date) {
+        return service.findByDate(date);
+    }
+
+    @GetMapping("/price/{priceInitial}/{priceFinal}")
+    public List<TravelPackageDto> listPrice(@PathVariable("priceInitial") Double priceInitial, @PathVariable("priceFinal") Double priceFinal) {
+        return service.findByPrice(priceInitial, priceFinal);
+    }
+
 }

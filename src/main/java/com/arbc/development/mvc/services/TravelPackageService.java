@@ -1,5 +1,6 @@
 package com.arbc.development.mvc.services;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,4 +18,8 @@ public interface TravelPackageService {
     Optional<TravelPackageDto> update(TravelPackageRequest tpRequest);
 
     void remove(Long id);
+
+    List<TravelPackageDto> findByDate(LocalDate date);
+
+    List<TravelPackageDto> findByPrice(Double priceInitial, Double priceFinal);
 }

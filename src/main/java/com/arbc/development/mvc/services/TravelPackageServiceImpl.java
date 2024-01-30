@@ -1,5 +1,7 @@
 package com.arbc.development.mvc.services;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -124,5 +126,29 @@ public class TravelPackageServiceImpl implements TravelPackageService{
     @Transactional
     public void remove(Long id) {
         travelPackageRepository.deleteById(id);
+    }
+
+    @Override
+    public List<TravelPackageDto> findByDate(LocalDate date) {
+        List<TravelPackage> tPackages = (List<TravelPackage>) travelPackageRepository.findByInitDate(date);
+        return tPackages
+                .stream()
+                .map(tp -> DtoMapperTravelPackage.builder().setTPackage(tp).build())
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<TravelPackageDto> findByPrice(Double priceInitial, Double priceFinal) {
+        List<TravelPackage> tPackages = (List<TravelPackage>) travelPackageRepository.findAll();
+        List<TravelPackage> filteredList = new ArrayList<TravelPackage>();
+        for (TravelPackage travelPackage : tPackages) {
+            if (travelPackage.getPrice() >= priceInitial && travelPackage.getPrice() <= priceFinal) {
+                filteredList.add(travelPackage);
+            }
+        }
+        return filteredList
+                .stream()
+                .map(tp -> DtoMapperTravelPackage.builder().setTPackage(tp).build())
+                .collect(Collectors.toList());
     }
 }
