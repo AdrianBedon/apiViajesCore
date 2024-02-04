@@ -10,14 +10,16 @@ public class TravelPackageDto {
     private String flight;
     private LocalDate initDate;
     private LocalDate endDate;
+    private Double price;
 
-    public TravelPackageDto(Long id, String name, String hotel, String flight, LocalDate initDate, LocalDate endDate) {
+    public TravelPackageDto(Long id, String name, String hotel, String flight, LocalDate initDate, LocalDate endDate, Double price) {
         this.id = id;
         this.name = name;
         this.hotel = hotel;
         this.flight = flight;
         this.initDate = initDate;
         this.endDate = endDate;
+        this.price = price;
     }
 
     public Long getId() {
@@ -66,5 +68,13 @@ public class TravelPackageDto {
 
     public void setEndDate(LocalDate endDate) {
         this.endDate = endDate;
+    }
+
+    public Double getPrice() {
+        return price;
+    }
+
+    public void setPrice(Double price) {
+        this.price = price;
     }
 }

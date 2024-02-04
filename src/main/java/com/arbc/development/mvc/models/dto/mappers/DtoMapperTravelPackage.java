@@ -24,7 +24,7 @@ public class DtoMapperTravelPackage {
         if(tPackage == null) {
             throw new RuntimeException("Debe enviar el entity travel package");
         }
-        return new TravelPackageDto(this.tPackage.getId(), this.tPackage.getName(), this.tPackage.getHotel().getName(), this.tPackage.getFlight().getCode(), this.tPackage.getInitDate(), this.tPackage.getEndDate());
+        return new TravelPackageDto(this.tPackage.getId(), this.tPackage.getName(), this.tPackage.getHotel().getName(), this.tPackage.getFlight().getCode(), this.tPackage.getInitDate(), this.tPackage.getEndDate(), this.tPackage.getPrice());
     }
 
 
