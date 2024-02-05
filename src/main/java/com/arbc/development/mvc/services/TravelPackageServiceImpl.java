@@ -151,4 +151,19 @@ public class TravelPackageServiceImpl implements TravelPackageService{
                 .map(tp -> DtoMapperTravelPackage.builder().setTPackage(tp).build())
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public List<TravelPackageDto> findByCity(String city) {
+        List<TravelPackage> tPackages = (List<TravelPackage>) travelPackageRepository.findAll();
+        List<TravelPackage> filteredList = new ArrayList<TravelPackage>();
+        for (TravelPackage travelPackage : tPackages) {
+            if(travelPackage.getHotel().getCity().getName().equals(city)) {
+                filteredList.add(travelPackage);
+            }
+        }
+        return filteredList
+                .stream()
+                .map(tp -> DtoMapperTravelPackage.builder().setTPackage(tp).build())
+                .collect(Collectors.toList());
+    }
 }

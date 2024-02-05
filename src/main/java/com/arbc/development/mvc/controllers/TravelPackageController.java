@@ -69,4 +69,9 @@ public class TravelPackageController {
         return service.findByPrice(priceInitial, priceFinal);
     }
 
+    @GetMapping("/city/{city}")
+    public List<TravelPackageDto> listCity(@PathVariable String city) {
+        return service.findByCity(city);
+    }
+
 }

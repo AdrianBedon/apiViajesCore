@@ -22,4 +22,6 @@ public interface TravelPackageService {
     List<TravelPackageDto> findByDate(LocalDate date);
 
     List<TravelPackageDto> findByPrice(Double priceInitial, Double priceFinal);
+
+    List<TravelPackageDto> findByCity(String city);
 }
