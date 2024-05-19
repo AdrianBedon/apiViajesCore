@@ -44,11 +44,11 @@ public class SecurityConfig {
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http.authorizeHttpRequests()
             .requestMatchers(HttpMethod.GET, "/users", "/hotels", "/hotels/{city}", "/cities", "/flights", "/flights/{city}", "/packages","/packages/date/{date}","/packages/price/{priceInitial}/{priceFinal}", "/packages/city/{city}").permitAll()
-            .requestMatchers(HttpMethod.POST,"/peak/reportSale").permitAll()
+            .requestMatchers(HttpMethod.POST,"/peak/reportSale", "/users").permitAll()
             .requestMatchers(HttpMethod.GET, "/users/{id}").hasAnyRole("USER", "ADMIN")
             .requestMatchers(HttpMethod.POST, "/packages").hasAnyRole("USER","ADMIN")
             .requestMatchers(HttpMethod.GET, "/peak", "/off").hasRole("ADMIN")
-            .requestMatchers(HttpMethod.POST, "/users").hasRole("ADMIN")
+            //.requestMatchers(HttpMethod.POST, ).hasRole("ADMIN")
             .requestMatchers(HttpMethod.DELETE, "/packages/{id}").hasAnyRole("USER", "ADMIN")
             .requestMatchers(HttpMethod.DELETE, "/users/{id}").hasRole("ADMIN")
             .requestMatchers(HttpMethod.PUT, "/packages").hasAnyRole("USER", "ADMIN")
