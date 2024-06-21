@@ -1,8 +1,16 @@
 package com.arbc.development.mvc.auth;
 
+import java.io.IOException;
+import java.net.http.HttpRequest;
 import java.util.Arrays;
 
+import org.keycloak.adapters.authorization.PolicyEnforcer;
+import org.keycloak.adapters.authorization.integration.jakarta.ServletPolicyEnforcerFilter;
+import org.keycloak.adapters.authorization.spi.ConfigurationResolver;
+import org.keycloak.representations.adapters.config.PolicyEnforcerConfig;
+import org.keycloak.util.JsonSerialization;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,9 +19,12 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -24,8 +35,12 @@ import com.arbc.development.mvc.auth.filters.JwtAuthFilter;
 import com.arbc.development.mvc.auth.filters.JwtValidFilter;
 
 @Configuration
+@EnableWebSecurity
 public class SecurityConfig {
     
+    @Value("${spring.security.oauth2.resourceserver.jwt.jwk-set-uri}")
+    String jwkSetUri;
+
     @Autowired
     private AuthenticationConfiguration authenticationConfiguration;
 
@@ -34,15 +49,15 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    @Bean
+    /*@Bean
     AuthenticationManager authenticationManager() throws Exception
     {
         return authenticationConfiguration.getAuthenticationManager();
-    }
+    }*/
 
     @Bean
-    SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        return http.authorizeHttpRequests()
+    SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
+        /* return http.authorizeHttpRequests()
             .requestMatchers(HttpMethod.GET, "/users", "/hotels", "/hotels/{city}", "/cities", "/flights", "/flights/{city}", "/packages","/packages/date/{date}","/packages/price/{priceInitial}/{priceFinal}", "/packages/city/{city}").permitAll()
             .requestMatchers(HttpMethod.POST,"/peak/reportSale", "/users").permitAll()
             .requestMatchers(HttpMethod.GET, "/users/{id}").hasAnyRole("USER", "ADMIN")
@@ -58,9 +73,42 @@ public class SecurityConfig {
             .addFilter(new JwtAuthFilter(authenticationConfiguration.getAuthenticationManager()))
             .addFilter(new JwtValidFilter(authenticationConfiguration.getAuthenticationManager()))
             .csrf(config -> config.disable())
+            .oauth2ResourceServer(oauth -> {
+                oauth.jwt(jwt -> {});
+            })
             .sessionManagement(managment -> managment.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-            .build();
+            .build(); */
+
+            return httpSecurity
+                    .csrf(csrf -> csrf.disable())
+                    .authorizeHttpRequests(http -> http.anyRequest().authenticated())
+                    .oauth2ResourceServer(oauth -> {
+                        oauth.jwt(jwt -> {});
+                    })
+                    .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                    .build();
+    }
+
+    private ServletPolicyEnforcerFilter createPolicyEnforcerFilter() {
+        PolicyEnforcerConfig config;
+
+        try {
+            config = JsonSerialization.readValue(getClass().getResourceAsStream("/policy-enforcer.json"), PolicyEnforcerConfig.class);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return new ServletPolicyEnforcerFilter(new ConfigurationResolver() {
+            @Override
+            public PolicyEnforcerConfig resolve(org.keycloak.adapters.authorization.spi.HttpRequest request) {
+                return config;
+            }
+        });
+    }
+
+    @Bean
+    JwtDecoder jwtDecoder() {
+        return NimbusJwtDecoder.withJwkSetUri(this.jwkSetUri).build();
     }
 
     @Bean

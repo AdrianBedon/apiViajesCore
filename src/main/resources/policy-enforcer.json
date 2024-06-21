@@ -1,0 +1,8 @@
+{
+    "realm": "external",
+    "auth-server-url": "https://cloak.mindsoftdev.com:8443",
+    "resource": "external-clients",
+    "credentials": {
+      "secret": "tdW9rcKMUGdV0Noq6ah1ZRmrbDZbaL0M"
+    }
+}
