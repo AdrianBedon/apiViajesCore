@@ -57,7 +57,7 @@ public class KMSController {
             serverLoad.setSO(kmsService.decrypt(server.getSO()));
             serverLoad.setNombre(kmsService.decrypt(server.getNombre()));
             serverLoad.setMotorBase(kmsService.decrypt(server.getMotorBase()));
-            serverLoad.setSO(kmsService.decrypt(server.getSO()));
+            serverLoad.setDireccionIP(kmsService.decrypt(server.getDireccionIP()));
             serversLoad.add(serverLoad);
         }
         servers.setServidores(serversLoad);
